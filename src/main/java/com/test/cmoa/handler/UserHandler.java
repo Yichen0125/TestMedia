@@ -108,10 +108,9 @@ public class UserHandler {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public String showList(@RequestParam(value = "pageNo", required = false, defaultValue = "1") Integer pageNo,
 			HttpServletRequest request) {
-
 		Map<String, Object> params = WebUtils.getParametersStartingWith(request, "search_");
 		String queryString = DataUtils.encodeParamsToQueryString(params);
-
+		System.out.println();
 		request.setAttribute("queryString", queryString);
 
 		Page<User> page = userService.getPage(pageNo, params);

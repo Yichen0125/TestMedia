@@ -25,7 +25,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 
 	<insert id="saveUser">
-		insert into users (id,enabled,name,password,role_id) values(CRM_SEQ.nextval,#{enabled},#{name},#{password},#{role.id})
+		insert into users (enabled,name,password,role_id) values(#{enabled},#{name},#{password},#{role.id})
 	</insert>
 
 	<sql id="getPageQuery">
@@ -42,15 +42,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<select id="getContent" resultType="com.test.cmoa.entity.User">
 		select * from (
-			SELECT u.id, u.name, u.enabled, password, r.name AS "role.name"
+			SELECT u.id, u.name, u.enabled, u.password, r.name AS "role.name"
 			FROM users u 
 			LEFT OUTER JOIN roles r
 			ON u.role_id = r.id
 			<include refid="getPageQuery"/>
-		) u limit #{fromIndx} , #{endIndex}
-		<!-- <![CDATA[
-			where u.rn >=#{fromIndex} and u.rn<#{endIndex}
-		]]> -->
+		) u limit #{fromIndex},#{endIndex}
 	</select>
 
 	<select id="getTotalElements" resultType="long">

@@ -35,7 +35,7 @@ public class ProjectService {
 		page.setPageNo(pageNo);
 		page.setTotalElements((int) totalElements);
 
-		int fromIndex = (page.getPageNo() - 1) * page.getPageSize() + 1;
+		int fromIndex = (page.getPageNo() - 1) * page.getPageSize();
 		int endIndex = fromIndex + page.getPageSize();
 
 		myBatisParmas.put("fromIndex", fromIndex);

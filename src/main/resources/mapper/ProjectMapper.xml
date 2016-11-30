@@ -10,17 +10,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			FROM projects p
 			LEFT OUTER JOIN users u
 			ON p.user_id = u.id
-			
-			where p.user_id = #{user.id}
 			<include refid="getPageQuery"/>
-			
 		) p limit #{fromIndex},#{endIndex}
 	</select>
 
 	<sql id="getPageQuery">
-		<where>-
+		<where>
 			<if test="name != null ">
-				and p.name like #{name}
+				p.name like #{name}
 			</if>
 			<if test="pronum != null">
 				and p.pronum = #{pronum}

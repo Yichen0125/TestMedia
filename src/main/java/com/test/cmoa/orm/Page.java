@@ -4,13 +4,10 @@ import java.util.List;
 
 public class Page<T> {
 	private int pageNo;
-	private int pageSize = 3;
+	private int pageSize = 5;
 
 	private int totalElements;
 	private List<T> content;
-	public static final Integer PAGE_SIZE_SMALL = 5;
-	public static final Integer PAGE_SIZE_MIDDEL = 10;
-	public static final Integer PAGE_SIZE_BIG = 20;
 	public void setPageNo(int pageNo) {
 		if (pageNo < 1) {
 			pageNo = 1;

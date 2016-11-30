@@ -44,7 +44,7 @@
 
 <body class="main">
 <center>
-	<form action="" method="post">
+	<form action="${ctp }/xm/pro/list">
 	<br>
 	<br>
 	<br>

@@ -51,11 +51,12 @@
                 /static/** = anon
                 
 				/system/auth = roles[gwqx]
+				/user/list = roles[gwqx]
 				
 				/xm/pro/toAdd = roles[xjxm]
 				/xm/pro/list = roles[xmlb]
 				
-				 /** = authc
+				/** = authc
             </value>
         </property>
 	</bean>
