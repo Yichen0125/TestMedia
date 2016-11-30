@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.cmoa.dao.i.MediaMapper">
+	
+	<insert id="saveMedia" >
+		insert into medias(title,src,picture,descript,uptime,`convert`,remote_url,convert_area) 
+		values(#{title},#{src},#{picture},#{descript},#{uptime},#{convert},#{remoteUrl},#{convertArea})
+	</insert>
+	
+	<select id="selectAll" resultType="com.test.cmoa.entity.Media">
+		SELECT id,title,src,descript ,picture,uptime,`convert`,remote_url,convert_area FROM medias
+	</select>
+	
+	<select id="selectAllUnConvertUI" resultType="com.test.cmoa.entity.Media">
+		SELECT id,title,src,descript ,picture,uptime,`convert`,remote_url,convert_area FROM medias where `convert` = false
+	</select>
+	
+	<update id="updateConvertByEntity">
+		UPDATE medias SET title = #{title},src = #{src},descript = #{descript},uptime =#{uptime},`convert` = true,convert_area = false  WHERE id = #{id}
+	</update>
+	
+	<select id="selectMediaById" resultType="com.test.cmoa.entity.Media">
+		select id,title,src,descript ,picture,uptime,`convert`,remote_url,convert_area FROM medias where id = #{id}
+	</select>
+	
+	<update id="updateConvertAreaById">
+		UPDATE medias SET convert_area = !convert_area  WHERE id = #{id}
+	</update>
+	
+	<select id="selectUnConvertList" resultType="com.test.cmoa.entity.Media">
+		SELECT id,title,src,descript ,picture,uptime,`convert`,remote_url,convert_area FROM medias where convert_area = true
+	</select>
+	
+</mapper>

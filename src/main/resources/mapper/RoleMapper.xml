@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.cmoa.dao.i.RoleMapper">
+	
+	<insert id="saveRoleAuthority" parameterType="HashMap">
+		INSERT INTO role_authority (role_id, authority_id)
+		SELECT #{id}, s.* FROM(
+		<foreach collection="authorities" item="authority" separator="union all" index="index">
+		SELECT 
+			#{authority}
+		FROM dual
+		</foreach>
+		) s
+	</insert>
+
+	<delete id="deleteRoleAuthorityById">
+		DELETE FROM role_authority
+		WHERE role_id = #{id}
+	</delete>
+
+	<resultMap type="com.test.cmoa.entity.Role" id="getRole">
+		<id column="id" property="id" />
+		<result column="description" property="description" />
+		<result column="enabled" property="enabled" />
+		<result column="rName" property="name" />
+		<collection property="authorities" javaType="com.test.cmoa.entity.Authority">
+			<id column="aId" property="id" />
+			<result column="aName" property="name" />
+			<result column="display_name" property="displayName" />
+			<result column="permissions" property="permissions" />
+			<result column="url" property="url" />
+		</collection>
+	</resultMap>
+
+	<select id="getById" resultMap="getRole">
+		SELECT r.id, description,
+		enabled, r.name AS "rName",
+		a.id AS "aId", a.name AS "aName", display_name, permissions, url
+		FROM roles
+		r
+		LEFT OUTER JOIN role_authority ra
+		ON r.id = ra.role_id
+		LEFT OUTER JOIN
+		authorities a
+		ON ra.authority_id = a.id
+		WHERE r.id = #{id}
+	</select>
+
+	<insert id="create">
+		INSERT INTO roles(id, name, description, enabled)
+		VALUES (CRM_SEQ.nextval, #{name}, #{description}, #{enabled})
+	</insert>
+
+	<delete id="delete">
+		DELETE FROM roles
+		WHERE id = #{id}
+	</delete>
+
+	<select id="getTotalElements" resultType="long">
+		SELECT count(id)
+		FROM
+		roles
+	</select>
+
+	<select id="getContent" resultType="com.test.cmoa.entity.Role">
+		<!-- SELECT *
+		FROM( -->
+		SELECT id, description, enabled, name
+		FROM roles
+	<!--	) s
+		 <![CDATA[
+		WHERE rn >= #{fromIndex} AND rn < #{endIndex}
+		]]> -->
+	</select>
+	
+	<select id="getAllList" resultType="com.test.cmoa.entity.Role">
+		select
+		id,description,enabled,name from roles
+	</select>
+
+</mapper>

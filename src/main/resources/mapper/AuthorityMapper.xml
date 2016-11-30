@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.cmoa.dao.i.AuthorityMapper">
+	
+	<select id="getSubAuthorities" resultType="com.test.cmoa.entity.Authority">
+		SELECT id, display_name, name, permissions, parent_authority_id, url
+		FROM authorities
+		WHERE parent_authority_id = #{id}
+	</select>
+
+	<select id="getparents" resultType="com.test.cmoa.entity.Authority">
+		SELECT id, display_name, url
+		FROM authorities
+		WHERE parent_authority_id is null
+	</select>
+
+</mapper>

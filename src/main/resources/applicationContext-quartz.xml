@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+ <!-- 方式二：使用MethodInvokingJobDetailFactoryBean，任务类可以不实现Job接口，通过targetMethod指定调用方法-->    
+    <!-- 定义目标bean和bean中的方法 -->  
+    	<bean id="SpringQtzJob_1" class="com.test.cmoa.convert.FreeConvertStart"/>  
+    	<bean id="SpringQtzJob_2" class="com.test.cmoa.convert.FreeConvertStop" />
+    	
+	    <bean id="JobDetail_1" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+		    <property name="targetObject">  
+		        <ref bean="SpringQtzJob_1"/>  
+		    </property>  
+		    <property name="targetMethod">  <!-- 要执行的方法名称 -->  
+		        <value>convertStart</value>  
+		    </property>  
+		</bean>  
+		
+		<bean id="JobDetail_2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">  
+		    <property name="targetObject">  
+		        <ref bean="SpringQtzJob_2"/>  
+		    </property>  
+		    <property name="targetMethod">  <!-- 要执行的方法名称 -->  
+		        <value>convertStop</value>  
+		    </property>  
+		</bean>  
+  
+<!-- ======================== 调度触发器 ======================== -->  
+<bean id="CronTriggerBean_1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+    <property name="jobDetail" ref="JobDetail_1"></property>  
+    <property name="cronExpression" value="0 13 9 * * ?"></property>
+</bean>  
+
+<!-- ======================== 调度触发器 ======================== -->  
+<bean id="CronTriggerBean_2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">  
+    <property name="jobDetail" ref="JobDetail_2"></property>  
+    <property name="cronExpression" value="0 16 9 * * ?"></property>
+</bean>  
+  
+<!-- ======================== 调度工厂 ======================== -->  
+<bean id="SpringJobSchedulerFactoryBean" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">  
+    <property name="triggers">  
+        <list>  
+            <ref bean="CronTriggerBean_1"/>  
+            <ref bean="CronTriggerBean_2"/>  
+        </list>  
+    </property>  
+</bean>    
+</beans>

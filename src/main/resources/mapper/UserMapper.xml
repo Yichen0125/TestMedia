@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.cmoa.dao.i.UserMapper">
+
+	<select id="getUserList" resultType="com.test.cmoa.entity.User">
+		select name from users 
+	</select>
+
+	<delete id="deleteUser">
+		delete from users where id = #{id}
+	</delete>
+	
+	<update id="updateUser">
+		update users set enabled=#{enabled},name=#{name},password=#{password},role_id=#{role.id} where id=#{id}
+	</update>
+
+	<select id="getUserById" resultType="com.test.cmoa.entity.User">
+		SELECT u.id, u.name, u.enabled, password, r.name AS "role.name"
+		FROM users u 
+		LEFT OUTER JOIN roles r
+		ON u.role_id = r.id
+		WHERE u.id = #{id}
+	</select>
+
+	<insert id="saveUser">
+		insert into users (id,enabled,name,password,role_id) values(CRM_SEQ.nextval,#{enabled},#{name},#{password},#{role.id})
+	</insert>
+
+	<sql id="getPageQuery">
+		<where>
+			<if test="userName != null ">
+				u.name like #{userName}
+			</if>
+			<if test="enabled != null and enabled != ''">
+				and u.enabled = #{enabled}
+			</if>
+		</where>
+	
+	</sql>
+
+	<select id="getContent" resultType="com.test.cmoa.entity.User">
+		select * from (
+			SELECT u.id, u.name, u.enabled, password, r.name AS "role.name"
+			FROM users u 
+			LEFT OUTER JOIN roles r
+			ON u.role_id = r.id
+			<include refid="getPageQuery"/>
+		) u limit #{fromIndx} , #{endIndex}
+		<!-- <![CDATA[
+			where u.rn >=#{fromIndex} and u.rn<#{endIndex}
+		]]> -->
+	</select>
+
+	<select id="getTotalElements" resultType="long">
+		select count(*) from users u
+		<include refid="getPageQuery"/>
+	</select>
+
+	<!-- <select id="getByName" resultType="com.atguigu.crm.entity.User">
+		SELECT u.id, u.name, u.enabled, password, r.name AS "role.name", salt
+		FROM users u 
+		LEFT OUTER JOIN roles r
+		ON u.role_id = r.id
+		WHERE u.name = #{name}
+	</select> -->
+	
+	<resultMap type="com.test.cmoa.entity.User" id="userMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="enabled" property="enabled"/>
+		<result column="password" property="password"/>
+		<result column="salt" property="salt"/>
+		
+		<result column="role.name" property="role.name"/>
+		
+		<collection property="role.authorities" ofType="com.test.cmoa.entity.Authority">
+			<id column="a_id" property="id"/>
+			<result column="a_display_name" property="displayName"/>
+			<result column="a_url" property="url"/>
+			<result column="a_name" property="name"/>
+			
+			<result column="p_id" property="parentAuthority.id"/>		
+			<result column="p_display_name" property="parentAuthority.displayName"/>
+		</collection>
+	</resultMap>
+
+	<select id="getByName" resultMap="userMap">
+		SELECT u.id, u.name, u.enabled, password, salt,
+			   r.name AS "role.name", 
+		       a.id AS "a_id", a.display_name AS "a_display_name", a.url AS "a_url", a.name AS "a_name", 
+		       p.id AS "p_id", p.display_name AS "p_display_name"
+	    FROM users u 
+	    LEFT OUTER JOIN roles r
+	    ON u.role_id = r.id
+	    LEFT OUTER JOIN role_authority ra
+	    ON r.id = ra.role_id
+	    LEFT OUTER JOIN authorities a
+	    ON a.id = ra.authority_id
+	    LEFT OUTER JOIN authorities p
+	    ON p.id = a.PARENT_AUTHORITY_ID
+		WHERE u.name = #{name}
+	</select>
+	
+</mapper>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.test.cmoa.dao.i.ProjectMapper">
+
+	<select id="getContent" resultType="com.test.cmoa.entity.Project">
+		select * from (
+			SELECT p.id, p.pronum,p.name,p.user_id, u.name as "user.name" ,p.status,p.date,p.yq
+			FROM projects p
+			LEFT OUTER JOIN users u
+			ON p.user_id = u.id
+			
+			where p.user_id = #{user.id}
+			<include refid="getPageQuery"/>
+			
+		) p limit #{fromIndex},#{endIndex}
+	</select>
+
+	<sql id="getPageQuery">
+		<where>-
+			<if test="name != null ">
+				and p.name like #{name}
+			</if>
+			<if test="pronum != null">
+				and p.pronum = #{pronum}
+			</if>
+		</where>
+	</sql>
+
+	<select id="getTotalElements" resultType="long">
+		select count(*) from projects p
+		<include refid="getPageQuery"/>
+	</select>
+	
+	<insert id="save">
+		insert into projects(pronum,`name`,status,user_id,`date`,url,groupnum,cus,yq)values(#{pronum}, #{name},#{status},
+            	#{user.id},#{date},#{url},#{groupnum},#{cus},#{yq})
+	</insert>
+	<insert id="saveProjectGroup">
+		insert into project_groups(groupnum,user_id,`date`) values(#{groupnum},#{user.id},#{date})
+	</insert>
+	
+</mapper>
