@@ -18,7 +18,17 @@ public class Authority extends IdEntity {
 	private String url;
 	// 子权限
 	private List<Authority> subAuthorities = new ArrayList<Authority>();
+	//***
+	private Integer parentAuthorityId;
 
+	public Integer getParentAuthorityId() {
+		return parentAuthorityId;
+	}
+
+	public void setParentAuthorityId(Integer parentAuthorityId) {
+		this.parentAuthorityId = parentAuthorityId;
+	}
+	//***
 	@Override
 	public String toString() {
 		return "Authority [displayName=" + displayName + ", name=" + name + ", permissions=" + permissions

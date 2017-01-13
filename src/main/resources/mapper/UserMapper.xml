@@ -77,17 +77,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<result column="a_display_name" property="displayName"/>
 			<result column="a_url" property="url"/>
 			<result column="a_name" property="name"/>
+			<result column="a_parent_authority_id" property="parentAuthorityId"/>
 			
 			<result column="p_id" property="parentAuthority.id"/>		
 			<result column="p_display_name" property="parentAuthority.displayName"/>
 		</collection>
 	</resultMap>
 
+	
 	<select id="getByName" resultMap="userMap">
 		SELECT u.id, u.name, u.enabled, password, salt,
 			   r.name AS "role.name", 
-		       a.id AS "a_id", a.display_name AS "a_display_name", a.url AS "a_url", a.name AS "a_name", 
-		       p.id AS "p_id", p.display_name AS "p_display_name"
+		       a.id AS "a_id", a.display_name AS "a_display_name", a.url AS "a_url", a.name AS "a_name", a.parent_authority_id as "a_parent_authority_id", 
+		       p.id AS "p_id", p.display_name AS "p_display_name" 
 	    FROM users u 
 	    LEFT OUTER JOIN roles r
 	    ON u.role_id = r.id

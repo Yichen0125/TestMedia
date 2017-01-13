@@ -17,7 +17,7 @@ public class Role extends IdEntity {
 	private List<Authority> authorities = new ArrayList<Authority>();
 	// 该角色分配给了哪些用户
 	private Set<User> users = new HashSet<User>();
-
+	
 	public String getName() {
 		return name;
 	}
